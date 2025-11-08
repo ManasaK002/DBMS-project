@@ -3,10 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Ticket, Mail, Lock, User } from "lucide-react";
-import { authAPI, authHelpers } from "@/lib/api";
 import { toast } from "sonner";
+import { BASE_URL } from "../config.js"; // ✅ Add this import
+
+interface SignupResponse {
+  success?: boolean;
+  user_id?: number;
+  error?: string;
+  detail?: string;
+}
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -15,17 +29,39 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
-      const response = await authAPI.signup({ email, password, name });
-      authHelpers.setToken(response.token);
-      toast.success("Account created successfully!");
-      navigate("/");
-    } catch (error: any) {
-      toast.error(error.message || "Signup failed");
+      // Split full name into first and last for backend
+      const [first_name, ...rest] = name.trim().split(" ");
+      const last_name = rest.join(" ");
+
+      const response = await fetch(`${BASE_URL}/auth`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "register",
+          first_name,
+          last_name,
+          email,
+          password,
+        }),
+      });
+
+      const data: SignupResponse = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success("Account created successfully!");
+        navigate("/login");
+      } else {
+        toast.error(data.error || "Signup failed");
+        console.error("Signup error detail:", data.detail);
+      }
+    } catch (error) {
+      console.error("Signup failed:", error);
+      toast.error("An error occurred while creating account");
     } finally {
       setLoading(false);
     }
@@ -36,7 +72,7 @@ const Signup = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-primary/10 to-transparent blur-3xl" />
       <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-tr from-accent/10 to-transparent blur-3xl" />
-      
+
       <Card className="w-full max-w-md relative z-10 border-border bg-card/95 backdrop-blur animate-scale-in">
         <CardHeader className="space-y-4 text-center pb-8">
           <div className="flex justify-center mb-2">
@@ -52,7 +88,9 @@ const Signup = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-base">Full Name</Label>
+              <Label htmlFor="name" className="text-base">
+                Full Name
+              </Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -67,7 +105,9 @@ const Signup = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-base">Email Address</Label>
+              <Label htmlFor="email" className="text-base">
+                Email Address
+              </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -82,7 +122,9 @@ const Signup = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-base">Password</Label>
+              <Label htmlFor="password" className="text-base">
+                Password
+              </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
@@ -96,8 +138,8 @@ const Signup = () => {
                 />
               </div>
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full h-12 text-base bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
               disabled={loading}
             >
@@ -108,11 +150,17 @@ const Signup = () => {
         <CardFooter className="flex flex-col space-y-4 pt-2">
           <div className="text-sm text-center text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary hover:text-accent transition-colors font-medium">
+            <Link
+              to="/login"
+              className="text-primary hover:text-accent transition-colors font-medium"
+            >
               Sign in instead
             </Link>
           </div>
-          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto">
+          <Link
+            to="/"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
+          >
             ← Back to home
           </Link>
         </CardFooter>
