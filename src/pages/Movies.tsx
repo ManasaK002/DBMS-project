@@ -76,12 +76,7 @@ const Movies = () => {
               </div>
             </div>
           </div>
-          <Link to="/admin/create-movie">
-            <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Movie
-            </Button>
-          </Link>
+         
         </div>
       </header>
 
