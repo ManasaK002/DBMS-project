@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db   = 'booking_system'; // your database name
 $user = 'root';
-$pass = ''; // your MySQL password (empty if none)
+$pass = 'welcome'; // your MySQL password (empty if none)
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

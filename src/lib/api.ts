@@ -91,12 +91,11 @@ export const moviesAPI = {
 // Shows API
 export const showsAPI = {
   getByMovie: (movieId: string, params?: { date?: string; cityId?: string }) => {
-    const query = new URLSearchParams(params as any).toString();
-    return apiRequest(`/movies/${movieId}/shows${query ? `?${query}` : ''}`);
+    const query = new URLSearchParams({ movie_id: movieId, ...params } as any).toString();
+    return apiRequest(`/shows?${query}`);
   },
-
-  getById: (id: string) => apiRequest(`/shows/${id}`),
 };
+
 
 // Bookings API
 export const bookingsAPI = {

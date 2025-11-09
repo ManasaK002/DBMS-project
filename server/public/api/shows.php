@@ -14,14 +14,14 @@ require_once __DIR__ . '/../../src/db.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    // list shows for event_id
-    if (isset($_GET['event_id'])) {
+    // list shows for movie_id
+    if (isset($_GET['movie_id'])) {
         $stmt = $pdo->prepare("SELECT s.*, v.venue_name, sc.screen_name FROM shows s
                               JOIN venues v ON s.venue_id=v.venue_id
                               JOIN screens sc ON s.screen_id=sc.screen_id
-                              WHERE s.event_id = ? AND s.status='scheduled'
+                              WHERE s.movie_id = ? AND s.status='scheduled'
                               ORDER BY s.show_date, s.show_time");
-        $stmt->execute([$_GET['event_id']]);
+        $stmt->execute([$_GET['movie_id']]);
         echo json_encode($stmt->fetchAll());
         exit;
     }
@@ -30,7 +30,7 @@ if ($method === 'GET') {
     if (isset($_GET['show_id'])) {
         $show_id = intval($_GET['show_id']);
         // find the screen for this show
-        $stmt = $pdo->prepare("SELECT screen_id FROM shows WHERE show_id = ?");
+        $stmt = $pdo->prepare("SELECT screen_id FROM movies WHERE movie_id = ?");
         $stmt->execute([$show_id]);
         $show = $stmt->fetch();
         if (!$show) { http_response_code(404); echo json_encode(['error'=>'show not found']); exit; }

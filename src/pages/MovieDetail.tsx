@@ -75,17 +75,41 @@ export default function MovieDetail() {
   };
 
   const fetchShows = async () => {
-    try {
-      const showsData = await showsAPI.getByMovie(id!, { date: selectedDate });
-      setTheaters(showsData.theaters || []);
-    } catch (error: any) {
-      toast({
-        title: "Error loading shows",
-        description: error.message,
-        variant: "destructive",
+  try {
+    const showsData = await showsAPI.getByMovie(id!, { date: selectedDate });
+
+    // Group shows by theater (venue_name)
+    const grouped: Record<string, any> = {};
+    showsData.forEach((show: any) => {
+      const theaterName = show.venue_name || "Unknown Theater";
+      if (!grouped[theaterName]) {
+        grouped[theaterName] = {
+          theater_id: show.venue_id,
+          theater_name: theaterName,
+          address: show.address || "",
+          shows: [],
+        };
+      }
+      grouped[theaterName].shows.push({
+        id: show.show_id,
+        show_time: show.show_time,
+        show_date: show.show_date,
+        screen_name: show.screen_name,
+        price: show.price || 250,
+        available_seats: 50, // default, until you link seats
       });
-    }
-  };
+    });
+
+    setTheaters(Object.values(grouped));
+  } catch (error: any) {
+    toast({
+      title: "Error loading shows",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
+};
+
 
   const getNextDates = () => {
     const dates = [];
