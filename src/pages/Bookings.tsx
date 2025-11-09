@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { bookingsAPI, authHelpers } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Calendar, MapPin, Ticket } from "lucide-react";
+import { BASE_URL } from "../config"; // ✅ added
 
 interface Booking {
   id: number;

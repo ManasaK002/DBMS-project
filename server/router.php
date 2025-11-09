@@ -26,17 +26,32 @@
 require_once __DIR__ . '/public/index.php'; */
 
 // router.php
+
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-if (preg_match('/^\/api\/auth/', $uri)) {
+// Match routes manually
+ if (preg_match('/^\/api\/auth/', $uri)) {
     require __DIR__ . '/public/api/auth.php';
-} elseif (preg_match('/^\/api\/movies/', $uri)) {
-    require __DIR__ . '/public/api/movies.php';
 } elseif (preg_match('/^\/api\/bookings/', $uri)) {
     require __DIR__ . '/public/api/bookings.php';
-} elseif (preg_match('/^\/api\/seats/', $uri)) {
-    require __DIR__ . '/public/api/seats.php';
+} elseif (preg_match('/^\/api\/events/', $uri)) {
+    require __DIR__ . '/public/api/events.php';
+} elseif (preg_match('/^\/api\/shows/', $uri)) {
+    require __DIR__ . '/public/api/shows.php';
+} elseif (preg_match('/^\/api\/payments/', $uri)) {
+    require __DIR__ . '/public/api/payments.php';
+} elseif (preg_match('/^\/api\/reviews/', $uri)) {
+    require __DIR__ . '/public/api/reviews.php';
 } else {
-    return false; // fallback to static files if needed
-}
+    return false;
+} 
+/*
+if (preg_match('/^\/api\/auth/', $uri)) require 'public/api/auth.php';
+elseif (preg_match('/^\/api\/events/', $uri)) require 'public/api/events.php';
+elseif (preg_match('/^\/api\/shows/', $uri)) require 'public/api/shows.php';
+elseif (preg_match('/^\/api\/bookings/', $uri)) require 'public/api/bookings.php';
+elseif (preg_match('/^\/api\/payments/', $uri)) require 'public/api/payments.php';
+elseif (preg_match('/^\/api\/reviews/', $uri)) require 'public/api/reviews.php';
+*/
+
 

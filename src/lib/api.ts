@@ -1,6 +1,6 @@
 // API configuration and utilities
 // Update this URL to match your backend deployment
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = "http://127.0.0.1:8000/api"
 
 // Get auth token from localStorage
 const getAuthToken = () => localStorage.getItem('auth_token');
