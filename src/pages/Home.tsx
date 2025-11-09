@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Film, Ticket, ArrowRight, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { UserNav } from "@/components/Usernav";
+import { authHelpers } from "@/lib/api";
 
 const AnimatedSection = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
   const { elementRef, isVisible } = useScrollAnimation();
@@ -20,36 +23,51 @@ const AnimatedSection = ({ children, delay = 0 }: { children: React.ReactNode; d
 };
 
 const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = authHelpers.getToken();
+    setIsLoggedIn(!!token);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-6 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer">
+           <Link to="/" className="flex items-center gap-3 group cursor-pointer">
             <div className="h-10 w-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform">
               <Ticket className="h-5 w-5 text-background" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               TicketHub
             </h1>
-          </div>
+             </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link to="/movies" className="text-foreground/70 hover:text-primary transition-colors font-medium">
               Movies
             </Link>
-            <Link to="/bookings" className="text-foreground/70 hover:text-primary transition-colors font-medium">
-              My Bookings
-            </Link>
-            <Link to="/login">
-              <Button variant="ghost" className="text-foreground/70 hover:text-foreground">
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity">
-                Sign Up
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link to="/bookings" className="text-foreground/70 hover:text-primary transition-colors font-medium">
+                  My Bookings
+                </Link>
+                <UserNav />
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" className="text-foreground/70 hover:text-foreground">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

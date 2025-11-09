@@ -1,6 +1,7 @@
+
 // API configuration and utilities
 // Update this URL to match your backend deployment
-const API_BASE_URL = "http://127.0.0.1:8000/api"
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 // Get auth token from localStorage
 const getAuthToken = () => localStorage.getItem('auth_token');
@@ -30,16 +31,29 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
 
 // Auth API
 export const authAPI = {
-  signup: (data: { email: string; password: string; name: string; phone?: string }) =>
-    apiRequest('/signup', {
+  signup: (data: { email: string; password: string; name: string; phone?: string }) => {
+    const [firstName, ...lastNameParts] = data.name.split(' ');
+    return apiRequest('/auth', {
       method: 'POST',
-      body: JSON.stringify(data),
-    }),
+       body: JSON.stringify({
+        action: 'register',
+        first_name: firstName,
+        last_name: lastNameParts.join(' ') || '',
+        email: data.email,
+        password: data.password,
+        phone_number: data.phone,
+      }),
+    });
+  },
 
   login: (data: { email: string; password: string }) =>
-    apiRequest('/login', {
+      apiRequest('/auth', {
       method: 'POST',
-      body: JSON.stringify(data),
+       body: JSON.stringify({
+        action: 'login',
+        email: data.email,
+        password: data.password,
+      }),
     }),
 };
 
@@ -108,7 +122,19 @@ export const bookingsAPI = {
 
 // Auth helpers
 export const authHelpers = {
+  getToken: () => getAuthToken(),
   setToken: (token: string) => localStorage.setItem('auth_token', token),
-  removeToken: () => localStorage.removeItem('auth_token'),
+  removeToken: () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+  },
   isAuthenticated: () => !!getAuthToken(),
+  setUser: (user: { user_id: number; first_name: string; last_name: string; email: string }) => {
+    localStorage.setItem('user_data', JSON.stringify(user));
+    localStorage.setItem('auth_token', 'logged_in');
+  },
+  getUser: () => {
+    const data = localStorage.getItem('user_data');
+    return data ? JSON.parse(data) : null;
+  },
 };
