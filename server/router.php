@@ -34,8 +34,8 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     require __DIR__ . '/public/api/auth.php';
 } elseif (preg_match('/^\/api\/bookings/', $uri)) {
     require __DIR__ . '/public/api/bookings.php';
-} elseif (preg_match('/^\/api\/events/', $uri)) {
-    require __DIR__ . '/public/api/events.php';
+} elseif (preg_match('/^\/api\/movies/', $uri)) {
+    require __DIR__ . '/public/api/movies.php';
 } elseif (preg_match('/^\/api\/shows/', $uri)) {
     require __DIR__ . '/public/api/shows.php';
 } elseif (preg_match('/^\/api\/payments/', $uri)) {

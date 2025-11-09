@@ -33,16 +33,18 @@ const Movies = () => {
   }, []);
 
   const fetchMovies = async () => {
-    try {
-      const data = await moviesAPI.getAll();
-      setMovies(data.movies);
-    } catch (error: any) {
-      toast.error("Failed to load movies");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await moviesAPI.getAll();
+    // since backend returns an array directly
+    setMovies(data);
+  } catch (error: any) {
+    toast.error("Failed to load movies");
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (loading) {
     return (
@@ -106,9 +108,9 @@ const Movies = () => {
         <div className="container mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {movies.map((movie, index) => (
-              <AnimatedCard key={movie.id} delay={index * 50}>
+              <AnimatedCard key={movie.movie_id} delay={index * 50}>
                 <Card className="group overflow-hidden border-border hover:border-primary/50 transition-all duration-500 bg-card">
-                  <Link to={`/movies/${movie.id}`}>
+                  <Link to={`/movies/${movie.movie_id}`}>
                     <div className="aspect-[2/3] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <span className="text-6xl group-hover:scale-110 transition-transform duration-500">🎬</span>

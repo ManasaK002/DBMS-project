@@ -68,6 +68,20 @@ CREATE TABLE `events` (
   `status` ENUM('active','inactive') DEFAULT 'active'
 ) ENGINE=InnoDB;
 
+CREATE TABLE movies (
+  movie_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  language VARCHAR(100),
+  genre VARCHAR(100),
+  release_date DATE,
+  duration INT,
+  rating VARCHAR(10),
+  poster_url VARCHAR(500),
+  trailer_url VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Shows
 CREATE TABLE `shows` (
   `show_id` INT AUTO_INCREMENT PRIMARY KEY,
