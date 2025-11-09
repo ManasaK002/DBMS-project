@@ -94,6 +94,8 @@ export const showsAPI = {
     const query = new URLSearchParams({ movie_id: movieId, ...params } as any).toString();
     return apiRequest(`/shows?${query}`);
   },
+  getById: (id: string) => apiRequest(`/shows?show_id=${id}`),
+
 };
 
 

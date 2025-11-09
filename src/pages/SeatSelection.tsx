@@ -66,38 +66,52 @@ export default function SeatSelection() {
   };
 
   const handleBooking = async () => {
-    if (selectedSeats.length === 0) {
-      toast({
-        title: "No seats selected",
-        description: "Please select at least one seat",
-        variant: "destructive",
-      });
-      return;
-    }
+  if (selectedSeats.length === 0) {
+    toast({
+      title: "No seats selected",
+      description: "Please select at least one seat",
+      variant: "destructive",
+    });
+    return;
+  }
 
-    setBooking(true);
-    try {
-      const response = await bookingsAPI.create({
-        showId: Number(showId),
-        seatIds: selectedSeats,
-      });
-      
-      toast({
-        title: "Booking created",
-        description: `Booking expires in ${Math.floor(response.expiresIn / 60)} minutes`,
-      });
-      
-      navigate(`/booking/${response.booking.id}`);
-    } catch (error: any) {
-      toast({
-        title: "Booking failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setBooking(false);
-    }
-  };
+  setBooking(true);
+  try {
+    // Call your existing booking API
+    await bookingsAPI.create({
+      showId: Number(showId),
+      seatIds: selectedSeats,
+      totalAmount: selectedSeats.length * (show?.price || 250),
+    });
+
+    // ✅ Show success message
+    toast({
+      title: "Payment Successful 💳",
+      description: "Your seats have been booked!",
+    });
+
+    // ✅ Update the local UI to mark seats as booked
+    setSeats((prevSeats) =>
+      prevSeats.map((seat) =>
+        selectedSeats.includes(seat.id)
+          ? { ...seat, is_booked: true }
+          : seat
+      )
+    );
+
+    // ✅ Clear selected seats after confirmation
+    setSelectedSeats([]);
+  } catch (error: any) {
+    toast({
+      title: "Booking failed",
+      description: error.message,
+      variant: "destructive",
+    });
+  } finally {
+    setBooking(false);
+  }
+};
+
 
   if (loading) {
     return (
