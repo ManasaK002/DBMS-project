@@ -35,8 +35,8 @@ const Movies = () => {
   const fetchMovies = async () => {
   try {
     const data = await moviesAPI.getAll();
-    // since backend returns an array directly
-    setMovies(data);
+    console.log("Movies API Response:", data);
+    setMovies(Array.isArray(data) ? data : data.movies || []);
   } catch (error: any) {
     toast.error("Failed to load movies");
     console.error(error);
@@ -76,7 +76,17 @@ const Movies = () => {
               </div>
             </div>
           </div>
-         
+          <div>
+            <Link to="/bookings" className="text-foreground/70 hover:text-primary transition-colors font-medium">
+                  My Bookings
+                </Link>
+          </div>
+          {/* <Link to="/admin/create-movie">
+            <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Movie
+            </Button>
+          </Link> */}
         </div>
       </header>
 
@@ -103,39 +113,39 @@ const Movies = () => {
         <div className="container mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {movies.map((movie, index) => (
-              <AnimatedCard key={movie.movie_id} delay={index * 50}>
-                <Card className="group overflow-hidden border-border hover:border-primary/50 transition-all duration-500 bg-card">
-                  <Link to={`/movies/${movie.movie_id}`}>
-                    <div className="aspect-[2/3] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <span className="text-6xl group-hover:scale-110 transition-transform duration-500">🎬</span>
+              <AnimatedCard key={movie.id} delay={index * 50}>
+              <Card className="group overflow-hidden border-border hover:border-primary/50 transition-all duration-500 bg-card">
+                <div className="aspect-[2/3] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="text-6xl group-hover:scale-110 transition-transform duration-500">🎬</span>
+                </div>
+                <div className="p-5 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors line-clamp-1">
+                      {movie.title}
+                    </h3>
+                    <Badge variant="secondary" className="shrink-0 text-xs">
+                      {new Date(movie.release_date).getFullYear()}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">{movie.genre}</Badge>
+                    <div className="flex items-center gap-1 text-xs">
+                      <Star className="h-3 w-3 fill-primary text-primary" />
+                      <span className="font-medium">{movie.rating}</span>
                     </div>
-                    <div className="p-5 space-y-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-lg font-semibold group-hover:text-primary transition-colors line-clamp-1">
-                          {movie.title}
-                        </h3>
-                        <Badge variant="secondary" className="shrink-0 text-xs">
-                          {new Date(movie.release_date).getFullYear()}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">{movie.genre}</Badge>
-                        <div className="flex items-center gap-1 text-xs">
-                          <Star className="h-3 w-3 fill-primary text-primary" />
-                          <span className="font-medium">{movie.rating}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="text-sm font-medium text-muted-foreground">{movie.duration} min</span>
-                        <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
-                          Book Now
-                        </Button>
-                      </div>
-                    </div>
-                  </Link>
-                </Card>
-              </AnimatedCard>
+                  </div>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-sm font-medium text-muted-foreground">{movie.duration} min</span>
+                    <Link to={`/movies/${movie.id}`} state={{ movie }}>
+                      <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+                        Book Now
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            </AnimatedCard>
             ))}
           </div>
         </div>

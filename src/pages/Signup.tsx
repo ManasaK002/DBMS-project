@@ -30,6 +30,7 @@ const Signup = () => {
           email,
         });
         toast.success("Account created successfully!");
+        localStorage.setItem('user_id', response.user_id);
         navigate("/");
       } else {
         toast.error("Signup failed");

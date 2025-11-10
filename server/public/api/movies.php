@@ -15,16 +15,50 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     if (isset($_GET['id'])) {
-        $stmt = $pdo->prepare("SELECT * FROM movies WHERE movie_id = ?");
+        // Fetch a single movie by ID
+        $stmt = $pdo->prepare("
+            SELECT 
+                movie_id AS id,
+                title,
+                description,
+                duration,
+                language,
+                genre,
+                rating,
+                poster_url,
+                release_date
+            FROM movies
+            WHERE movie_id = ?
+        ");
         $stmt->execute([$_GET['id']]);
-        $ev = $stmt->fetch();
-        if ($ev) echo json_encode($ev);
-        else { http_response_code(404); echo json_encode(['error'=>'not found']); }
+        $movie = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($movie) {
+            echo json_encode($movie);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Movie not found']);
+        }
     } else {
-        $stmt = $pdo->query("SELECT * FROM movies ORDER BY release_date DESC");
-        $rows = $stmt->fetchAll();
-        echo json_encode($rows);
+        // Fetch all movies
+        $stmt = $pdo->query("
+            SELECT 
+                movie_id AS id,
+                title,
+                description,
+                duration,
+                language,
+                genre,
+                rating,
+                poster_url,
+                release_date
+            FROM movies
+            ORDER BY release_date DESC
+        ");
+        $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($movies);
     }
     exit;
 }
+
 http_response_code(405);

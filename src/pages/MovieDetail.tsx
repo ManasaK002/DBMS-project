@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { moviesAPI, showsAPI } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "react-router-dom";
 import { ArrowLeft, Clock, Star, Calendar, MapPin, Loader2 } from "lucide-react";
 
 interface Movie {
@@ -41,10 +42,14 @@ export default function MovieDetail() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const location = useLocation();
+  const stateMovie = location.state?.movie;
+  //const [movie, setMovie] = useState<Movie | null>(null);
   const [theaters, setTheaters] = useState<Theater[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [movie, setMovie] = useState<Movie | null>(location.state?.movie || null);
 
+  
   useEffect(() => {
     fetchMovieDetails();
   }, [id]);

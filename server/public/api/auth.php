@@ -35,7 +35,10 @@ if ($method === 'POST') {
         try {
             $stmt = $pdo->prepare("INSERT INTO users (first_name,last_name,email,password_hash,phone_number,registration_status) VALUES (?,?,?,?,?, 'active')");
             $stmt->execute([$first,$last,$email,$hash, $input['phone_number'] ?? null]);
+            
+            echo json_encode(['success'=>true, 'user' => ['user_id'=>$user['user_id'],'first_name'=>$user['first_name'],'last_name'=>$user['last_name']]]);
             echo json_encode(['success' => true, 'user_id' => $pdo->lastInsertId()]);
+
         } catch (PDOException $e) {
             http_response_code(400);
             echo json_encode(['error' => 'Registration failed', 'detail' => $e->getMessage()]);
@@ -51,6 +54,7 @@ if ($method === 'POST') {
         if ($user && password_verify($password, $user['password_hash'])) {
             // NOTE: In production return a JWT or session cookie
             echo json_encode(['success'=>true, 'user' => ['user_id'=>$user['user_id'], 'first_name'=>$user['first_name'], 'last_name'=>$user['last_name']]]);
+            
         } else {
             http_response_code(401);
             echo json_encode(['error'=>'Invalid credentials']);

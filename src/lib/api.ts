@@ -101,11 +101,15 @@ export const showsAPI = {
 
 // Bookings API
 export const bookingsAPI = {
-  create: (data: { showId: number; seatIds: number[] }) =>
-    apiRequest('/bookings', {
-      method: 'POST',
-      body: JSON.stringify(data),
+  create: (data: { user_id: number; showId: number; seatIds: number[]; total_amount: number }) =>
+  apiRequest('/bookings', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...data,
+      user_id: Number(localStorage.getItem('user_id')), 
     }),
+  }),
+
 
   confirm: (bookingId: string, paymentId: string) =>
     apiRequest(`/bookings/${bookingId}/confirm`, {
@@ -113,7 +117,11 @@ export const bookingsAPI = {
       body: JSON.stringify({ paymentId }),
     }),
 
-  getUserBookings: () => apiRequest('/bookings'),
+  getUserBookings: async () => {
+    const user = authHelpers.getUser(); // assumes your auth stores user info
+    const userId = user?.id || 1; // fallback for testing
+    return apiRequest(`/bookings?user_id=${userId}`);
+  },
 
   cancel: (bookingId: string) =>
     apiRequest(`/bookings/${bookingId}`, {

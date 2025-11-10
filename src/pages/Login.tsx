@@ -23,6 +23,7 @@ const Login = () => {
         if (response.success && response.user) {
         authHelpers.setUser({ ...response.user, email });
         toast.success("Login successful!");
+        localStorage.setItem('user_id', response.user.user_id);
         navigate("/");
       } else {
         toast.error("Login failed");

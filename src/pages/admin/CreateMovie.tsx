@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Film } from "lucide-react";
 import { toast } from "sonner";
 import { moviesAPI } from "@/lib/api";
-import { BASE_URL } from "../config"; // ✅ added
+import { BASE_URL } from "../../config"; // ✅ added
 
 const CreateMovie = () => {
   const navigate = useNavigate();
