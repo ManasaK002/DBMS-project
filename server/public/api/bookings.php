@@ -120,9 +120,7 @@ if ($method === 'DELETE') {
 }
 
 if ($method === 'GET') {
-    // Get user_id directly from query parameter (e.g. /api/bookings?user_id=1)
     $user_id = $_GET['user_id'] ?? null;
-
     if (!$user_id) {
         http_response_code(400);
         echo json_encode(['error' => 'Missing user_id']);
@@ -153,9 +151,22 @@ if ($method === 'GET') {
     $stmt->execute([$user_id]);
     $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // --- Fetch seats for each booking ---
+    foreach ($bookings as &$booking) {
+        $ticketStmt = $pdo->prepare("
+            SELECT seat_id 
+            FROM tickets 
+            WHERE booking_id = ?
+        ");
+        $ticketStmt->execute([$booking['id']]);
+        $seats = $ticketStmt->fetchAll(PDO::FETCH_COLUMN);
+        $booking['seats'] = $seats; // add seats array to each booking
+    }
+
     echo json_encode(['bookings' => $bookings]);
     exit;
 }
+
 
 
 

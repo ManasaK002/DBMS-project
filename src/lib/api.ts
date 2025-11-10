@@ -9,24 +9,32 @@ const getAuthToken = () => localStorage.getItem('auth_token');
 // API request wrapper
 async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const token = getAuthToken();
-  
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Request failed' }));
-    throw new Error(error.error || error.message || 'Request failed');
+  const text = await response.text(); // read as text
+  
+ let data;
+  try {
+    data = JSON.parse(text); // try to parse JSON
+  } catch {
+    data = text; // fallback: raw text
   }
 
-  return response.json();
+  if (!response.ok) {
+    throw new Error(
+      (data && typeof data === 'object' && (data.error || data.message)) || text || 'Request failed'
+    );
+  }
+
+  return data;
 }
 
 // Auth API
@@ -118,10 +126,12 @@ export const bookingsAPI = {
     }),
 
   getUserBookings: async () => {
-    const user = authHelpers.getUser(); // assumes your auth stores user info
-    const userId = user?.id || 1; // fallback for testing
-    return apiRequest(`/bookings?user_id=${userId}`);
-  },
+  const user = authHelpers.getUser();
+  if (!user) throw new Error("No logged-in user found");
+  console.log("Fetching bookings for user:", user.user_id); // DEBUG
+  return apiRequest(`/bookings?user_id=${user.user_id}`);
+},
+
 
   cancel: (bookingId: string) =>
     apiRequest(`/bookings/${bookingId}`, {

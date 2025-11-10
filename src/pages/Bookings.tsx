@@ -1,3 +1,4 @@
+
   import { useEffect, useState } from "react";
   import { useNavigate } from "react-router-dom";
   import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@
     theater_name: string;
     address: string;
     screen_name: string;
-    seats: string[];
+    seats?: string[];
   }
 
   export default function Bookings() {
@@ -36,20 +37,24 @@
       fetchBookings();
     }, []);
 
-    const fetchBookings = async () => {
-      try {
-        const data = await bookingsAPI.getUserBookings();
-        setBookings(data.bookings);
-      } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+   const fetchBookings = async () => {
+  try {
+    const data = await bookingsAPI.getUserBookings();
+    console.log("Bookings API response:", data); // 🔍 debug
+    setBookings(Array.isArray(data.bookings) ? data.bookings : []);
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: error.message,
+      variant: "destructive",
+    });
+    setBookings([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
     const handleCancelBooking = async (bookingId: number) => {
       try {

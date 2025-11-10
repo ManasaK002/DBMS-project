@@ -36,7 +36,19 @@ if ($method === 'POST') {
             $stmt = $pdo->prepare("INSERT INTO users (first_name,last_name,email,password_hash,phone_number,registration_status) VALUES (?,?,?,?,?, 'active')");
             $stmt->execute([$first,$last,$email,$hash, $input['phone_number'] ?? null]);
             
-            echo json_encode(['success'=>true, 'user' => ['user_id'=>$user['user_id'],'first_name'=>$user['first_name'],'last_name'=>$user['last_name']]]);
+             $userId = $pdo->lastInsertId();
+
+            // return JSON
+            /* echo json_encode([
+                'success' => true,
+                'user' => [
+                    'user_id' => $userId,
+                    'first_name' => $first,
+                    'last_name' => $last
+                ]
+            ]); */
+
+            //echo json_encode(['success'=>true, 'user' => ['user_id'=>$user['user_id'],'first_name'=>$user['first_name'],'last_name'=>$user['last_name']]]);
             echo json_encode(['success' => true, 'user_id' => $pdo->lastInsertId()]);
 
         } catch (PDOException $e) {
