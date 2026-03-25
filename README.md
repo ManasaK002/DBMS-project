@@ -16,7 +16,7 @@ A full-stack movie ticket booking web application built as a Database Management
 * **Package Manager:** Bun / NPM
 
 ## 📂 Project Structure
-```text
+``text
 DBMS-project/
 ├── public/               # Static assets (images, icons)
 ├── server/               # PHP Backend API and database connection files
