@@ -1,22 +1,22 @@
 Markdown
-# 🎬 Movie Booking Website (DBMS Project)
+#  Movie Booking Website 
 
 A full-stack movie ticket booking web application built as a Database Management Systems (DBMS) project. This platform allows users to browse movies, view showtimes, and book tickets, backed by a robust database architecture.
 
-## ✨ Features
+##  Features
 * **User Authentication:** Secure login and registration for users.
 * **Movie Catalog:** Browse current and upcoming movies with details (posters, descriptions, ratings).
 * **Seat Selection:** Interactive UI to select available seats for a specific showtime.
 * **Ticket Booking:** Seamless booking flow with booking confirmation.
 * **Admin Dashboard:** Manage movies, theaters, and user bookings.
 
-## 💻 Tech Stack
+##  Tech Stack
 * **Frontend:** TypeScript, Vite, Tailwind CSS (with `shadcn/ui` components)
 * **Backend:** PHP
 * **Database:** MySQL / MariaDB
 * **Package Manager:** Bun / NPM
 
-## 📂 Project Structure
+##  Project Structure
 text
 DBMS-project/
 ├── public/               # Static assets (images, icons)
@@ -27,7 +27,7 @@ DBMS-project/
 ├── vite.config.ts        # Vite build configuration
 ├── bun.lockb             # Bun lockfile
 └── package.json          # Frontend dependencies and scripts
-🚀 Getting Started
+Getting Started
 Follow these instructions to set up the project on your local machine for development and testing.
 
 Prerequisites
@@ -68,7 +68,7 @@ bun run dev
 # or npm run dev
 The frontend should now be running on http://localhost:5173. Ensure the frontend API calls are pointing to your local PHP server URL.
 
-🤝 Contributors
+ Contributors
 ManasaK002
 
 ritikanairr
@@ -77,4 +77,3 @@ ritikanairr
 This project is created for educational purposes as part of a DBMS curriculum.
 
 
-If it still gives you trouble, honestly, don't worry too much about it! It's better
